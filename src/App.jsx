@@ -2,6 +2,32 @@ import React, { useEffect, useRef, useState } from "react";
 
 export default function AfterthinkStudioArchitectureLanding() {
   const whatsappLink = "https://api.whatsapp.com/send/?phone=7507003616&text&type=phone_number&app_absent=0";
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // --- NAVBAR SCROLL EFFECT ---
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 80; // Navbar height offset
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
+    setIsMenuOpen(false);
+  };
 
   // --- STATS COUNTER LOGIC ---
   const statsRef = useRef(null);
@@ -49,18 +75,18 @@ export default function AfterthinkStudioArchitectureLanding() {
   // --- PORTFOLIO SLIDER LOGIC ---
   const [currentIndex, setCurrentIndex] = useState(0);
   const projects = [
-    { title: "Bad Room", img: "/img/image1.png" },
-    { title: "   Design", img: "/img/image2.png" },
+    { title: "Bedroom", img: "/img/image1.png" },
+    { title: "Design", img: "/img/image2.png" },
     { title: "Office Design", img: "/img/image3.png" },
-    { title: "Modular Bad ", img: "/img/image4.png" },
-    { title: "Luxury Holl ", img: "/img/image5.png" },
-    { title: "Modern gallery ", img: "/img/image7.png" },
+    { title: "Modular Bed", img: "/img/image4.png" },
+    { title: "Luxury Hall", img: "/img/image5.png" },
+    { title: "Modern Gallery", img: "/img/image7.png" },
   ];
 
   useEffect(() => {
     const timer = setInterval(() => {
       nextSlide();
-    }, 5000); 
+    }, 5000);
     return () => clearInterval(timer);
   }, [currentIndex]);
 
@@ -73,94 +99,122 @@ export default function AfterthinkStudioArchitectureLanding() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7FBFF] text-gray-900">
+    <div className="min-h-screen bg-[#F7FBFF] text-gray-900 font-sans">
+      
+      {/* --- NAVIGATION BAR --- */}
+      <nav className={`fixed -top-2 w-full z-20 transition-all duration-300 ${scrolled ? "bg-white/80 backdrop-blur-md shadow-sm py-3" : "bg-transparent py-6"}`}>
+        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+          {/* Logo */}
+        <div 
+  className="flex items-center cursor-pointer"
+  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+>
+  <img 
+    src="/img/logoimage.png" 
+    alt="Afterthink Logo"
+    className="h-20  w-auto object-contain"
+  />
+</div>
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-8">
+            {['About', 'Projects', 'Testimonials', 'Contact'].map((item) => (
+              <button 
+                key={item} 
+                onClick={() => scrollToSection(item.toLowerCase())}
+                className="text-sm font-semibold text-gray-700 hover:text-[#3A7BFF] transition-colors"
+              >
+                {item}
+              </button>
+            ))}
+            <a href={whatsappLink} className="bg-[#3A7BFF] text-white px-6 py-2.5 rounded-full text-sm font-bold hover:shadow-lg hover:shadow-blue-200 transition-all no-underline">
+              Get Started
+            </a>
+          </div>
+
+          {/* Mobile Toggle */}
+          <button className="md:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <div className={`w-6 h-0.5 bg-gray-900 mb-1.5 transition-all ${isMenuOpen ? "rotate-45 translate-y-2" : ""}`}></div>
+            <div className={`w-6 h-0.5 bg-gray-900 mb-1.5 ${isMenuOpen ? "opacity-0" : ""}`}></div>
+            <div className={`w-6 h-0.5 bg-gray-900 transition-all ${isMenuOpen ? "-rotate-45 -translate-y-2" : ""}`}></div>
+          </button>
+        </div>
+
+        {/* Mobile Menu Overlay */}
+        <div className={`fixed inset-0 bg-white z-40 flex flex-col items-center justify-center gap-8 transition-transform duration-500 md:hidden ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
+          {['About', 'Projects', 'Testimonials', 'Contact'].map((item) => (
+            <button key={item} onClick={() => scrollToSection(item.toLowerCase())} className="text-3xl font-bold text-gray-800">{item}</button>
+          ))}
+          <button onClick={() => setIsMenuOpen(false)} className="mt-10 w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center">✕</button>
+        </div>
+      </nav>
 
       {/* HERO */}
-      <section className="px-6 py-24 text-center relative overflow-hidden">
-        {/* Updated Hero Image Path */}
+      <section className="relative h-screen flex items-center justify-center text-center px-6 overflow-hidden">
         <img
           src="/img/image9.png"
-          className="absolute inset-0 w-full mt-23 fit object-cover opacity-40"
+          className="absolute inset-0 w-full h-full object-cover opacity-20"
           alt="Hero background"
         />
-
-        <div className="relative z-10">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight animate-fadeUp">
+        <div className="relative z-10 mt-16">
+          <h1 className="text-5xl md:text-8xl font-black tracking-tighter animate-fadeUp">
             Designing Spaces <br />
             <span className="text-[#3A7BFF]">That Define You</span>
           </h1>
-
-          <p className="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">
-            Premium interior design with modern elegance and refined aesthetics.
+          <p className="mt-8 text-lg md:text-xl text-gray-500 max-w-2xl mx-auto font-medium">
+            Premium interior design with modern elegance and refined aesthetics for visionary clients.
           </p>
-
-          <div className="mt-10 flex justify-center gap-4">
-            <a href="https://www.instagram.com/afterthink.studio/" target="_blank" rel="noopener noreferrer" className="bg-[#3A7BFF] text-white px-6 py-3 rounded-full hover:scale-105 transition cursor-pointer no-underline">
-              View Projects
-            </a>
-            <a href={whatsappLink} className="border px-6 py-3 rounded-full hover:bg-gray-100 transition cursor-pointer no-underline">
-              Contact Us
-            </a>
+          <div className="mt-12 flex flex-col md:flex-row justify-center gap-5">
+            <button onClick={() => scrollToSection('projects')} className="bg-[#3A7BFF] text-white px-10 py-4 rounded-full font-bold hover:scale-105 transition shadow-xl shadow-blue-200">
+              Explore Projects
+            </button>
+            <button onClick={() => scrollToSection('contact')} className="bg-white border border-gray-200 px-10 py-4 rounded-full font-bold hover:bg-gray-50 transition">
+              Consultation
+            </button>
           </div>
         </div>
       </section>
 
       {/* ABOUT */}
-      <section className="px-6 py-24 max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+      <section id="about" className="px-6 py-32 max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
         <div className="relative">
-          <div className="relative w-full aspect-square bg-[#E3D5C5] rounded-[40px] overflow-hidden shadow-xl flex items-center justify-center p-12 text-center">
+          <div className="relative w-full aspect-square bg-[#E3D5C5] rounded-[60px] overflow-hidden shadow-2xl flex items-center justify-center p-12">
              <img 
               src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7" 
-              className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-30"
+              className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-20"
               alt="Texture"
             />
-            <div className="relative z-10">
-              <h3 className="text-2xl md:text-3xl font-bold text-gray-800 leading-tight uppercase tracking-widest">
+            <div className="relative z-10 text-center">
+              <h3 className="text-3xl md:text-4xl font-black text-gray-800 leading-none uppercase tracking-tighter">
                 Interior Design <br />
-                <span className="text-sm font-normal normal-case block mt-2 text-gray-600">
-                  is making the best possible use of the available
+                <span className="text-sm font-semibold tracking-widest block mt-4 text-gray-600 opacity-70">
+                  MAKING THE BEST USE OF THE AVAILABLE
                 </span>
                 SPACE
               </h3>
             </div>
-            <div className="absolute bottom-10 left-10 w-20 h-20 border-4 border-white/50 rounded-lg"></div>
           </div>
-
-          <div className="absolute -bottom-10 -right-4 md:right-0 w-1/2 aspect-square rounded-[30px] overflow-hidden border-8 border-[#F7FBFF] shadow-2xl">
-            <img 
-              src="/img/image6.png" 
-              className="w-full h-full object-cover "
-              alt="Interior detail"
-            />
+          <div className="absolute -bottom-10 -right-6 w-1/2 aspect-square rounded-[40px] overflow-hidden border-[12px] border-[#F7FBFF] shadow-2xl hidden md:block">
+            <img src="/img/image6.png" className="w-full h-full object-cover" alt="Detail" />
           </div>
         </div>
 
-        <div className="flex flex-col gap-6">
-          <div className="flex items-center gap-2 text-[#3A7BFF] font-semibold uppercase text-xs tracking-widest">
-            <span className="w-2 h-4 bg-[#3A7BFF] rounded-full"></span>
-            About Us
+        <div className="flex flex-col gap-8">
+          <div className="flex items-center gap-3 text-[#3A7BFF] font-bold uppercase text-xs tracking-[0.2em]">
+            <span className="w-8 h-[2px] bg-[#3A7BFF]"></span>
+            The Studio
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-            About Afterthink Studio
+          <h2 className="text-4xl md:text-6xl font-black text-gray-900 leading-[0.9]">
+            Crafting Luxury <br/>Experiences.
           </h2>
-          <p className="text-gray-600 leading-relaxed">
-            Led by our expert team, Afterthink Studio is a design powerhouse with years of experience. 
-            Known for exceptional space planning, thoughtful material selection, and trusted service.
+          <p className="text-gray-500 text-lg leading-relaxed">
+            Afterthink Studio is a multidisciplinary design powerhouse. We specialize in turning cold structures into warm, functional homes and high-performance commercial spaces through thoughtful material selection.
           </p>
-
-          <div className="mt-6 border-t border-gray-200">
-            {[
-              { id: "01", q: "What sets Afterthink Studio apart from others" },
-              { id: "02", q: "Do you handle both residential and commercial projects" },
-              { id: "03", q: "How involved will I be in the design process" }
-            ].map((item, index) => (
-              <div key={index} className="py-5 border-b border-gray-200 flex items-center justify-between group cursor-default">
-                <div className="flex items-center gap-4">
-                  <span className="text-sm font-bold text-gray-400">{item.id}.</span>
-                  <span className="text-lg font-medium text-gray-800 group-hover:text-[#3A7BFF] transition-colors font-sans">
-                    {item.q}
-                  </span>
-                </div>
+          <div className="space-y-4">
+            {["Bespoke Furniture Design", "Residential Space Planning", "Commercial Interior Branding"].map((text, i) => (
+              <div key={i} className="flex items-center gap-4 py-4 border-b border-gray-100 group cursor-pointer">
+                <span className="text-[#3A7BFF] font-black">0{i+1}.</span>
+                <span className="font-bold text-gray-800 group-hover:translate-x-2 transition-transform">{text}</span>
               </div>
             ))}
           </div>
@@ -168,239 +222,164 @@ export default function AfterthinkStudioArchitectureLanding() {
       </section>
 
       {/* PORTFOLIO SLIDER */}
-      <section className="px-6 py-24 bg-white overflow-hidden">
+      <section id="projects" className="px-6 py-32 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-            <div>
-              <div className="flex items-center gap-2 text-[#3A7BFF] font-semibold uppercase text-xs tracking-widest mb-3">
-                <span className="w-2 h-4 bg-[#3A7BFF] rounded-full"></span>
-                Project Portfolio
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+            <div className="max-w-xl">
+              <div className="flex items-center gap-3 text-[#3A7BFF] font-bold uppercase text-xs tracking-[0.2em] mb-4">
+                <span className="w-8 h-[2px] bg-[#3A7BFF]"></span>
+                Portfolio
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
-                Where Ideas Took Shape
+              <h2 className="text-4xl md:text-6xl font-black text-gray-900 leading-none">
+                Recent Work.
               </h2>
             </div>
             
-            <div className="flex gap-3">
-               <button onClick={prevSlide} className="group p-4 rounded-full border border-gray-200 hover:bg-[#3A7BFF] active:scale-90 transition-all shadow-sm">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-600 group-hover:text-white rotate-180">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
+            <div className="flex gap-4">
+               <button onClick={prevSlide} className="w-14 h-14 flex items-center justify-center rounded-full border border-gray-200 hover:bg-[#3A7BFF] hover:text-white transition-all shadow-sm">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="rotate-180"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
               </button>
-              <button onClick={nextSlide} className="group p-4 rounded-full border border-gray-200 hover:bg-[#3A7BFF] active:scale-90 transition-all shadow-sm">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-600 group-hover:text-white">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
+              <button onClick={nextSlide} className="w-14 h-14 flex items-center justify-center rounded-full border border-gray-200 hover:bg-[#3A7BFF] hover:text-white transition-all shadow-sm">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
               </button>
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-[40px]">
+          <div className="relative overflow-hidden rounded-[50px]">
             <div 
-              className="flex gap-6 transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateX(-${currentIndex * (100 / 3 + 1.2)}%)` }} 
+              className="flex gap-6 transition-transform duration-1000 cubic-bezier(0.23, 1, 0.32, 1)"
+              style={{ transform: `translateX(-${currentIndex * (window.innerWidth < 768 ? 88 : 34.5)}%)` }} 
             >
               {projects.map((project, i) => (
-                <div key={i} className="min-w-[85%] md:min-w-[calc(33.333%-16px)] h-[500px] relative rounded-[40px] overflow-hidden group shadow-lg">
-                  <img src={project.img} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={project.title} />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
-                  <div className="absolute bottom-10 left-10">
-                    <p className="text-[#3A7BFF] text-xs font-bold uppercase tracking-widest mb-2">Portfolio Item</p>
-                    <h3 className="text-white text-2xl font-bold">{project.title}</h3>
+                <div key={i} className="min-w-[85%] md:min-w-[33%] h-[550px] relative rounded-[50px] overflow-hidden group">
+                  <img src={project.img} className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={project.title} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80"></div>
+                  <div className="absolute bottom-12 left-12">
+                    <p className="text-[#3A7BFF] text-xs font-black uppercase tracking-widest mb-3">Residential</p>
+                    <h3 className="text-white text-3xl font-bold">{project.title}</h3>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-
-          <div className="mt-12 flex flex-col items-center gap-8">
-            <div className="flex gap-2">
-              {Array.from({ length: projects.length - 2 }).map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentIndex(i)}
-                  className={`h-2 rounded-full transition-all duration-500 ${currentIndex === i ? 'w-10 bg-[#3A7BFF]' : 'w-2 bg-gray-300'}`}
-                />
-              ))}
-            </div>
-            
-            {/* FIXED REDIRECT BUTTON */}
-            <a 
-              href="https://www.instagram.com/afterthink.studio/" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="flex items-center gap-2 pl-8 pr-2 py-2 rounded-full border border-gray-300 hover:bg-gray-50 transition-all group no-underline"
-            >
-              <span className="text-gray-700 font-medium">View All Portfolios</span>
-              <div className="bg-[#3A7BFF] text-white p-3 rounded-full group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">
-                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path d="M7 17L17 7M17 7H7M17 7V17" />
-                </svg>
-              </div>
-            </a>
-          </div>
         </div>
       </section>
 
       {/* STATS */}
-      <section ref={statsRef} className="px-16 w-full py-20 text-center">
-        <div className="grid grid-cols-3 max-w-5xl mx-auto">
-          {["Projects", "Years", "Satisfaction"].map((label, i) => (
-            <div key={i} className="hover:scale-105 transition duration-300">
-              <h2 className="text-5xl font-bold text-[#3A7BFF]">
+      <section ref={statsRef} className="py-32 bg-[#F7FBFF]">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 text-center">
+          {["Projects Completed", "Years Experience", "Happy Clients"].map((label, i) => (
+            <div key={i}>
+              <h2 className="text-7xl font-black text-gray-900 tabular-nums">
                 {counts[i]}{i === 2 ? "%" : "+"}
               </h2>
-              <p className="text-gray-500 font-medium mt-2">{label}</p>
+              <p className="text-[#3A7BFF] font-bold uppercase tracking-widest mt-4">{label}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="px-6 py-24 bg-[#F7FBFF] overflow-hidden">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-          <div className="relative rounded-[40px] overflow-hidden shadow-2xl aspect-[4/5] md:aspect-auto md:h-[600px]">
-            <img 
-              src="https://images.unsplash.com/photo-1594026112284-02bb6f3352fe" 
-              className="w-full h-full object-cover"
-              alt="Client space"
-            />
+      <section id="testimonials" className="px-6 py-32 bg-white">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-24 items-center">
+          <div className="relative rounded-[60px] overflow-hidden shadow-2xl h-[600px]">
+            <img src="https://images.unsplash.com/photo-1594026112284-02bb6f3352fe" className="w-full h-full object-cover" alt="Client Space" />
           </div>
 
-          <div className="relative flex flex-col gap-8">
+          <div className="flex flex-col gap-10">
             <div>
-              <div className="flex items-center gap-2 text-[#3A7BFF] font-semibold uppercase text-xs tracking-widest mb-3">
-                <span className="w-2 h-4 bg-[#3A7BFF] rounded-full"></span>
-                Client Feedback
+              <div className="flex items-center gap-3 text-[#3A7BFF] font-bold uppercase text-xs tracking-[0.2em] mb-4">
+                <span className="w-8 h-[2px] bg-[#3A7BFF]"></span>
+                Reviews
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
-                Hear from clients.
-              </h2>
+              <h2 className="text-4xl md:text-6xl font-black text-gray-900 leading-none">Voices of <br/>Confidence.</h2>
             </div>
 
-            <div className="relative min-h-[300px]">
-              {[
-                {
-                  name: "Bapu Nikumbh",
-                  location: "Nashik, India",
-                  text: "Superior finishes, trendy designs and quality modules at affordable prices.",
-                  rating: 5
-                },
-                {
-                  name: "Anita Sharma",
-                  location: "Haldwani, India",
-                  text: "From concept to execution, Afterthink Studio provided excellent service. Their expertise helped create a beautiful, functional space!",
-                  rating: 5
-                }
-              ].map((item, i) => (
-                <div 
-                  key={i}
-                  className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-                    currentIndex % 2 === i ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12 pointer-events-none'
-                  }`}
-                >
-                  <div className="bg-white p-10 md:p-12 rounded-[40px] border border-gray-100 shadow-sm relative overflow-hidden">
-                    <div className="flex gap-1 mb-6 text-yellow-400">
-                      {[...Array(item.rating)].map((_, s) => (
-                        <svg key={s} width="18" height="18" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                      ))}
-                    </div>
-                    <p className="text-gray-600 italic text-lg leading-relaxed mb-8">"{item.text}"</p>
-                    <div>
-                      <h4 className="font-bold text-gray-900 text-xl">{item.name}</h4>
-                      <p className="text-gray-400 text-sm">{item.location}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex items-center justify-between mt-12">
-               <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-bold text-gray-900">4.99</span>
-                  <span className="text-gray-400 text-sm">1000+ Rating</span>
-               </div>
-               <div className="flex gap-4">
-                  <button onClick={prevSlide} className="p-4 rounded-full border border-gray-200 hover:bg-gray-50 transition shadow-sm bg-white">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="rotate-180"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
-                  </button>
-                  <button onClick={nextSlide} className="p-4 rounded-full bg-[#3A7BFF] text-white hover:scale-105 transition shadow-lg">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
-                  </button>
-               </div>
+            <div className="bg-[#F7FBFF] p-12 rounded-[50px] border border-gray-100 relative">
+              <span className="text-9xl absolute -top-10 left-6 text-[#3A7BFF] opacity-10 font-serif">“</span>
+              <p className="text-xl text-gray-600 italic leading-relaxed mb-10 relative z-10">
+                "Superior finishes, trendy designs and quality modules at affordable prices. Afterthink Studio made our dream home a reality."
+              </p>
+              <div>
+                <h4 className="font-black text-gray-900 text-2xl">Bapu Nikumbh</h4>
+                <p className="text-[#3A7BFF] font-bold text-sm uppercase tracking-widest">Nashik, India</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="bg-[#3D3126] text-[#D4C3A9] pt-20 pb-10 px-6 rounded-t-[60px] mt-20">
+      {/* FOOTER / CONTACT */}
+      <footer id="contact" className="bg-[#111] text-white pt-32 pb-12 px-6 rounded-t-[80px]">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-            <div className="flex flex-col gap-8">
-              <div className="flex items-center gap-2">
-                 <div className="w-10 h-10 bg-white rounded flex items-center justify-center font-bold text-[#3D3126]">SQ</div>
-                 <span className="text-2xl font-bold tracking-tighter text-white uppercase">Square Deal<br/><span className="text-xs tracking-[0.3em] font-light">Interior</span></span>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-20 mb-24">
+            <div className="space-y-8">
+              <div 
+  className="flex items-center cursor-pointer"
+  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+>
+  <img 
+    src="/img/logoimage.png" 
+    alt="Afterthink Logo"
+    className="h-20  w-auto object-contain"
+  />
+</div>
+              <p className="text-gray-400 text-lg">Leading the way in modern Indian architecture and interior luxury.</p>
               <div className="flex gap-4">
-                {['facebook', 'instagram', 'linkedin', 'youtube', 'twitter'].map((social) => (
-                  <div key={social} className="w-10 h-10 rounded-full border border-[#D4C3A9]/30 flex items-center justify-center hover:bg-[#D4C3A9] hover:text-[#3D3126] transition-all cursor-pointer">
-                    <i className={`fab fa-${social} text-sm`}></i>
+                {['instagram', 'linkedin', 'facebook'].map(s => (
+                  <div key={s} className="w-12 h-12 rounded-full border border-gray-800 flex items-center justify-center hover:bg-[#3A7BFF] hover:border-[#3A7BFF] transition-all cursor-pointer">
+                    <i className={`fab fa-${s}`}></i>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div>
-              <h4 className="text-white text-xl font-semibold mb-6">Useful Links</h4>
-              <ul className="flex flex-col gap-4 text-sm list-none p-0">
-                {['About Us', 'Services', 'Portfolios', 'Blogs', 'Contact Us'].map((link) => (
-                  <li key={link} className="hover:text-white cursor-pointer transition-colors">{link}</li>
+            <div className="space-y-8">
+              <h4 className="text-xl font-bold">Quick Links</h4>
+              <ul className="space-y-4 text-gray-400 font-medium list-none p-0">
+                {['About', 'Projects', 'Testimonials', 'Contact'].map(l => (
+                  <li key={l} onClick={() => scrollToSection(l.toLowerCase())} className="hover:text-white cursor-pointer transition-colors">/ {l}</li>
                 ))}
               </ul>
             </div>
 
-            <div>
-              <h4 className="text-white text-xl font-semibold mb-6">Contact Info</h4>
-              <ul className="flex flex-col gap-6 text-sm list-none p-0">
-                <li className="flex items-center gap-3">
-                  <div className="p-2 rounded-full border border-[#D4C3A9]/20"><svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
-                  squaredealid@gmail.com
-                </li>
-                <li className="flex items-center gap-3">
-                   <div className="p-2 rounded-full border border-[#D4C3A9]/20"><svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg></div>
-                  +91 7507003616
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-white text-xl font-semibold mb-6">Address</h4>
-              <div className="flex gap-3 text-sm leading-relaxed">
-                <div className="mt-1"><svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
-                <p>Office Number 404, The Hub, Parijat Nagar Chowk, Mahatma Nagar, Nashik, Maharashtra 422005</p>
+            <div className="space-y-8">
+              <h4 className="text-xl font-bold">Contact</h4>
+              <div className="space-y-6">
+                <p className="text-gray-400">squaredealid@gmail.com</p>
+                <p className="text-gray-400">+91 7507003616</p>
+                <p className="text-gray-400 leading-relaxed">Office 404, The Hub, Parijat Nagar, Mahatma Nagar, Nashik 422005</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl p-6 flex flex-col md:flex-row justify-between items-center text-[#3D3126] text-sm font-medium">
-            <p>Copyright © 2026 Square Deal Interior. All Rights Reserved.</p>
-            <p className="mt-2 md:mt-0">Enquiry: <span className="font-bold">+91 7507003616</span></p>
+          <div className="pt-12 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-gray-500 font-bold uppercase tracking-widest">
+            <p>© 2026 AFTERTHINK STUDIO. ALL RIGHTS RESERVED.</p>
+            <p>DESIGNED FOR LUXURY</p>
           </div>
         </div>
       </footer>
 
       {/* Floating WhatsApp */}
-      <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="fixed bottom-5 right-5 bg-green-500 text-white px-5 py-3 rounded-full hover:scale-110 transition z-50 shadow-lg no-underline font-medium">
-        WhatsApp
+      <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="fixed bottom-8 right-8 bg-[#25D366] text-white w-16 h-16 rounded-full flex items-center justify-center hover:scale-110 transition-all z-50 shadow-2xl shadow-green-200">
+        <svg width="30" height="30" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
       </a>
 
       <style>{`
-        .animate-fadeUp { animation: fadeUp 1s ease forwards; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        .animate-fadeUp { animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(20px); }
+          from { opacity: 0; transform: translateY(40px); }
           to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #3A7BFF; border-radius: 10px; }
       `}</style>
     </div>
   );
