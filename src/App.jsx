@@ -81,7 +81,7 @@ export default function AfterthinkStudioArchitectureLanding() {
     { title: "Modular Bed", img: "/img/image4.png" },
     { title: "Luxury Hall", img: "/img/image5.png" },
     { title: "Modern Gallery", img: "/img/image7.png" },
-  ];
+  ] ;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -97,6 +97,49 @@ export default function AfterthinkStudioArchitectureLanding() {
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev === 0 ? projects.length - 3 : prev - 1));
   };
+
+  // --- TESTIMONIAL SLIDER LOGIC ---
+const [testimonialIndex, setTestimonialIndex] = useState(0);
+
+const testimonials = [
+  {
+    text: "Superior finishes, trendy designs and quality modules at affordable prices. Afterthink Studio made our dream home a reality.",
+    name: "Bapu Nikumbh",
+    location: "Nashik, India",
+  },
+  {
+    text: "The attention to detail and execution was outstanding. Every corner reflects elegance and smart planning.",
+    name: "Rahul Sharma",
+    location: "Nashik, India",
+  },
+  {
+    text: "Highly professional team. They transformed our office into a premium modern workspace.",
+    name: "Sneha Patil",
+    location: "Nashik, India",
+  },
+];
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setTestimonialIndex((prev) =>
+      prev === testimonials.length - 1 ? 0 : prev + 1
+    );
+  }, 6000);
+
+  return () => clearInterval(interval);
+}, []);
+
+const nextTestimonial = () => {
+  setTestimonialIndex((prev) =>
+    prev === testimonials.length - 1 ? 0 : prev + 1
+  );
+};
+
+const prevTestimonial = () => {
+  setTestimonialIndex((prev) =>
+    prev === 0 ? testimonials.length - 1 : prev - 1
+  );
+};
 
   return (
     <div className="min-h-screen bg-[#F7FBFF] text-gray-900 font-sans">
@@ -280,35 +323,85 @@ export default function AfterthinkStudioArchitectureLanding() {
       </section>
 
       {/* TESTIMONIALS */}
-      <section id="testimonials" className="px-6 py-32 bg-white">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-24 items-center">
-          <div className="relative rounded-[60px] overflow-hidden shadow-2xl h-[600px]">
-            <img src="https://images.unsplash.com/photo-1594026112284-02bb6f3352fe" className="w-full h-full object-cover" alt="Client Space" />
-          </div>
+<section id="testimonials" className="px-6 py-32 bg-white overflow-hidden">
+  <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-24 items-center">
 
-          <div className="flex flex-col gap-10">
-            <div>
-              <div className="flex items-center gap-3 text-[#3A7BFF] font-bold uppercase text-xs tracking-[0.2em] mb-4">
-                <span className="w-8 h-[2px] bg-[#3A7BFF]"></span>
-                Reviews
-              </div>
-              <h2 className="text-4xl md:text-6xl font-black text-gray-900 leading-none">Voices of <br/>Confidence.</h2>
-            </div>
+    {/* LEFT IMAGE (unchanged) */}
+    <div className="relative rounded-[60px] overflow-hidden shadow-2xl h-[600px]">
+      <img
+        src="https://images.unsplash.com/photo-1594026112284-02bb6f3352fe"
+        className="w-full h-full object-cover"
+        alt="Client Space"
+      />
+    </div>
 
-            <div className="bg-[#F7FBFF] p-12 rounded-[50px] border border-gray-100 relative">
-              <span className="text-9xl absolute -top-10 left-6 text-[#3A7BFF] opacity-10 font-serif">“</span>
-              <p className="text-xl text-gray-600 italic leading-relaxed mb-10 relative z-10">
-                "Superior finishes, trendy designs and quality modules at affordable prices. Afterthink Studio made our dream home a reality."
-              </p>
-              <div>
-                <h4 className="font-black text-gray-900 text-2xl">Bapu Nikumbh</h4>
-                <p className="text-[#3A7BFF] font-bold text-sm uppercase tracking-widest">Nashik, India</p>
-              </div>
-            </div>
-          </div>
+    {/* RIGHT CONTENT */}
+    <div className="flex flex-col gap-10">
+
+      {/* Heading */}
+      <div>
+        <div className="flex items-center gap-3 text-[#3A7BFF] font-bold uppercase text-xs tracking-[0.2em] mb-4">
+          <span className="w-8 h-[2px] bg-[#3A7BFF]"></span>
+          Reviews
         </div>
-      </section>
+        <h2 className="text-4xl md:text-6xl font-black text-gray-900 leading-none">
+          Voices of <br />Confidence.
+        </h2>
+      </div>
 
+      {/* SLIDER */}
+      <div className="relative overflow-hidden">
+        <div
+          className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          style={{ transform: `translateX(-${testimonialIndex * 100}%)` }}
+        >
+          
+          {testimonials.map((item, i) => (
+            <div key={i} className="min-w-full">
+              
+              <div className="bg-[#F7FBFF] p-12 rounded-[50px] border border-gray-100 relative">
+
+                <span className="text-9xl absolute -top-3.5 left-3.5 text-[#3A7BFF] opacity-30 font-serif">
+            
+                </span>
+
+                <p className="text-xl text-gray-600 italic leading-relaxed mb-10 relative z-10">
+                  "{item.text}"
+                </p>
+
+                <div>
+                  <h4 className="font-black text-gray-900 text-2xl">
+                    {item.name}
+                  </h4>
+                  <p className="text-[#3A7BFF] font-bold text-sm uppercase tracking-widest">
+                    {item.location}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* CONTROLS */}
+        <div className="flex gap-4 mt-6">
+          <button
+            onClick={prevTestimonial}
+            className="w-12 h-12 rounded-full border border-gray-200 hover:bg-[#3A7BFF] hover:text-white transition"
+          >
+                <img className="opacity-20 text-{15px} w-6 h-6 ml-2.5" src="/img/arrow.png" alt="" />
+          </button>
+          <button
+            onClick={nextTestimonial}
+            className="w-12 h-12 rounded-full border border-gray-200 hover:bg-[#3A7BFF] hover:text-white transition"
+          >
+            <img className="opacity-20 text-{15px} w-6 h-6 ml-2.5" src="/img/right-arrow.png" alt="" />
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
       {/* FOOTER / CONTACT */}
       <footer id="contact" className="bg-[#111] text-white pt-32 pb-12 px-6 rounded-t-[80px]">
         <div className="max-w-7xl mx-auto">
@@ -325,13 +418,45 @@ export default function AfterthinkStudioArchitectureLanding() {
   />
 </div>
               <p className="text-gray-400 text-lg">Leading the way in modern Indian architecture and interior luxury.</p>
-              <div className="flex gap-4">
-                {['instagram', 'linkedin', 'facebook'].map(s => (
-                  <div key={s} className="w-12 h-12 rounded-full border border-gray-800 flex items-center justify-center hover:bg-[#3A7BFF] hover:border-[#3A7BFF] transition-all cursor-pointer">
-                    <i className={`fab fa-${s}`}></i>
-                  </div>
-                ))}
-              </div>
+            <div className="flex gap-4">
+
+  {/* Instagram */}
+  <a
+    href="https://www.instagram.com/afterthink.studio/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-12 h-12 rounded-full border border-gray-800 flex items-center justify-center hover:bg-[#3A7BFF] hover:border-[#3A7BFF] transition-all"
+  >
+    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M7 2C4.2 2 2 4.2 2 7v10c0 2.8 2.2 5 5 5h10c2.8 0 5-2.2 5-5V7c0-2.8-2.2-5-5-5H7zm10 2c1.7 0 3 1.3 3 3v10c0 1.7-1.3 3-3 3H7c-1.7 0-3-1.3-3-3V7c0-1.7 1.3-3 3-3h10zm-5 3a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6zm4.5-2.5a1 1 0 100 2 1 1 0 000-2z"/>
+    </svg>
+  </a>
+
+  {/* Google Maps */}
+  <a
+    href="https://www.google.com/maps/place/Afterthink+Studio+Architecture+%26+Interior+designer+in+Nashik/@20.0027957,73.7543361,15z/data=!4m6!3m5!1s0x3bddeb954d701bb1:0xbb6d4c886b130692!8m2!3d20.0027957!4d73.7543361!16s%2Fg%2F11trwyyz44"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-12 h-12 rounded-full border border-gray-800 flex items-center justify-center hover:bg-[#3A7BFF] hover:border-[#3A7BFF] transition-all"
+  >
+    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z"/>
+    </svg>
+  </a>
+
+  {/* WhatsApp */}
+  <a
+    href="https://api.whatsapp.com/send/?phone=7507003616&text&type=phone_number&app_absent=0"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-12 h-12 rounded-full border border-gray-800 flex items-center justify-center hover:bg-[#3A7BFF] hover:border-[#3A7BFF] transition-all"
+  >
+    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+    </svg>
+  </a>
+
+</div>
             </div>
 
             <div className="space-y-8">
